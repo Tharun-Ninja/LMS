@@ -2,43 +2,43 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main{
+
     public static void main(String[] args) {
+        Menu menu = new Menu();
+        Librarian librarian = new Librarian();
+
         System.out.println("\nLibrary Portal Initialized….");
-        int option = -1;
+        int option;
 
         while(true){
-            Init();
-            // Add input validation
-            option = new Scanner(System.in).nextInt();
+            option = menu.InitMenu();
 
             // Checking if Librarian
             if(option == 1){
                 loop: while(true){
-                    Librarian.printMenu();
-                    option = new Scanner(System.in).nextInt();
-                    switch (option){
+                    switch (menu.librarianMenu()){
                         case 1:
-                            Librarian.registerMember();
+                            librarian.registerMember();
                             break;
 
                         case 2:
-                            Librarian.removeMember();
+                            librarian.removeMember();
                             break;
 
                         case 3:
-                            Librarian.addBook();
+                            librarian.addBook();
                             break;
 
                         case 4:
-                            Librarian.removeBook();
+                            librarian.removeBook();
                             break;
 
                         case 5:
-                            Librarian.viewAllMembers();
+                            librarian.viewAllMembers();
                             break;
 
                         case 6:
-                            Librarian.veiwAllBooks();
+                            librarian.viewAllBooks();
                             break;
 
                         case 7:
@@ -52,14 +52,8 @@ public class Main{
                 System.out.print("Phone no: ");
 
                 // check member if valid
-
                 loop: while(true){
-                    Member.printMenu();
-                    option = new Scanner(System.in).nextInt();
-
-
-
-                    switch (option){
+                    switch (menu.memberMenu()){
                         case 1:
                             Member.viewAvailableBooks();
                             break;
@@ -87,11 +81,7 @@ public class Main{
             }
             // Exit
             else if(option == 3){
-                System.out.print(
-                        "---------------------------------\n" +
-                                "Thanks for visiting!\n" +
-                                "---------------------------------\n"
-                );
+                menu.exit();
             }
             else {
                 System.out.println("Invalid Input");
@@ -101,15 +91,5 @@ public class Main{
 
     }
 
-
-    public static void Init(){
-        System.out.print(
-                "---------------------------------\n" +
-                        "1. Enter as a librarian\n" +
-                        "2. Enter as a member\n" +
-                        "3. Exit\n" +
-                        "---------------------------------\n"
-        );
-    }
 
 }

@@ -5,21 +5,14 @@ public class Member {
     private int Age;
 
     private String Name;
-    private int PhoneNumber;
+    private int Phone;
 
-    public static void printMenu(){
-        System.out.print(
-                "---------------------------------\n" +
-                        "1. List Available Books\n" +
-                        "2. List My Books\n" +
-                        "3. Issue book\n" +
-                        "4. Return book\n" +
-                        "5. Pay Fine\n" +
-                        "6. Back\n" +
-                        "---------------------------------\n"
-        );
+    public Member(int id, String name, int age, int phone) {
+        this.Name = name;
+        this.Age = age;
+        this.Phone = phone;
+        this.ID = id;
     }
-
 
 
     public static void viewAvailableBooks(){
@@ -39,4 +32,20 @@ public class Member {
 
     }
 
+    public int getID() {
+        return ID;
+    }
+
+    public int getAge() {
+        return Age;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+
+    public int getPhone() {
+        return Phone;
+    }
 }

@@ -1,64 +1,96 @@
+import javax.xml.crypto.Data;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Librarian{
-    public static void printMenu(){
-        System.out.print(
-                "---------------------------------\n" +
-                        "1. Register a member\n" +
-                        "2. Remove a member\n" +
-                        "3. Add a book\n" +
-                        "4. Remove a book\n" +
-                        "5. View all members along with their books and fines to be paid\n" +
-                        "6. View all books\n" +
-                        "7. Back\n" +
-                        "---------------------------------\n"
-        );
+
+    private String validateName(String q, Scanner in){
+        System.out.print(q + ": ");
+        String name = in.nextLine();
+        while(!name.matches("[a-zA-Z ]+")) {
+            System.out.println("Invalid "+q);
+            System.out.print(q + ": ");
+            name = in.nextLine();
+        }
+
+        return name;
     }
 
-    public static void registerMember(){
-        // Do input validation
-        // Update in maps
-        System.out.print("Name: ");
-        String name = new Scanner(System.in).nextLine();
-        System.out.print("Age: ");
-        int age = new Scanner(System.in).nextInt();
-        System.out.print("Phone no: ");
-        int phone = new Scanner(System.in).nextInt();
 
+    private int validateInt(String q, Scanner in) {
+        System.out.print(q + ": ");
+        while (!in.hasNextInt()) {
+            System.out.println("Invalid " + q);
+            System.out.print(q + ": ");
+            in.next();
+        }
 
+        return in.nextInt();
     }
 
-    public static void removeMember(){
-        // Do input validation
-        // Update in maps
-        System.out.print("Name: ");
-        String name = new Scanner(System.in).nextLine();
-        System.out.print("Phone no: ");
-        int phone = new Scanner(System.in).nextInt();
+    private int validatePhone(String q, Scanner in) {
+        System.out.print(q + ": ");
+        while (true) {
+            String phoneNumber = in.next();
+
+            if (phoneNumber.length() == 10 && phoneNumber.matches("\\d+")) {
+                return Integer.parseInt(phoneNumber);
+            } else {
+                System.out.println("Invalid " + q + ". Please enter a 10-digit phone number.");
+                System.out.print(q + ": ");
+            }
+        }
     }
 
-    public static void addBook(){
-        // Do input validation
-        // Update in maps
-        System.out.print("Book title: ");
-        String title = new Scanner(System.in).nextLine();
-        System.out.print("Author: ");
-        String author = new Scanner(System.in).nextLine();
-        System.out.print("Copies: ");
-        int Copies = new Scanner(System.in).nextInt();
+
+    Database database = new Database();
+
+    public void registerMember(){
+        System.out.println("---------------------------------");
+        Scanner input = new Scanner(System.in);
+
+        String name = this.validateName("Name", input);
+        int age = this.validateInt("Age", input);
+        int phone = this.validatePhone("Phone no", input);
+
+        System.out.println("---------------------------------");
+
+        database.registerMember(name, age, phone);
     }
 
-    public static void removeBook() {
-        // Do input validation
-        // Update in maps
-        System.out.print("Book ID: ");
-        int ID = new Scanner(System.in).nextInt();
+    public void removeMember(){
+        Scanner input = new Scanner(System.in);
+
+        String name = this.validateName("Name", input);
+        int id = this.validateInt("Member ID", input);
+
+        database.removeMember(name, id);
     }
 
-    public static void viewAllMembers(){
+    public void addBook(){
+        Scanner input = new Scanner(System.in);
+
+        String title = this.validateName("Book title", input);
+        String author = this.validateName("Author", input);
+        int copies = this.validateInt("Copies", input);
+
+        database.addBook(title, author, copies);
+
+        System.out.println("Book Added Successfully!");
     }
 
-    public static void veiwAllBooks() {
+    public void removeBook() {
+        Scanner input = new Scanner(System.in);
+        int bookID = this.validateInt("Book ID", input);
 
+        database.removeBook(bookID);
+    }
+
+    public void viewAllMembers(){
+        database.viewAllMembers();
+    }
+
+    public void viewAllBooks() {
+        database.viewAllBooks();
     }
 }
