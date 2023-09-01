@@ -47,4 +47,18 @@ public class Librarian{
         System.out.print("Copies: ");
         int Copies = new Scanner(System.in).nextInt();
     }
+
+    public static void removeBook() {
+        // Do input validation
+        // Update in maps
+        System.out.print("Book ID: ");
+        int ID = new Scanner(System.in).nextInt();
+    }
+
+    public static void viewAllMembers(){
+    }
+
+    public static void veiwAllBooks() {
+
+    }
 }

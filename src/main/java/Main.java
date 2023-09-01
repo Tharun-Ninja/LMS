@@ -30,12 +30,15 @@ public class Main{
                             break;
 
                         case 4:
+                            Librarian.removeBook();
                             break;
 
                         case 5:
+                            Librarian.viewAllMembers();
                             break;
 
                         case 6:
+                            Librarian.veiwAllBooks();
                             break;
 
                         case 7:
@@ -45,8 +48,42 @@ public class Main{
             }
             // Checking if Member
             else if (option == 2){
-                Member.printMenu();
-                option = new Scanner(System.in).nextInt();
+                System.out.print("Name: ");
+                System.out.print("Phone no: ");
+
+                // check member if valid
+
+                loop: while(true){
+                    Member.printMenu();
+                    option = new Scanner(System.in).nextInt();
+
+
+
+                    switch (option){
+                        case 1:
+                            Member.viewAvailableBooks();
+                            break;
+
+                        case 2:
+                            Member.viewMyBooks();
+                            break;
+
+                        case 3:
+                            Member.issueBook();
+                            break;
+
+                        case 4:
+                            Member.returnBook();
+                            break;
+
+                        case 5:
+                            Member.payFine();
+                            break;
+
+                        case 6:
+                            break loop;
+                    }
+                }
             }
             // Exit
             else if(option == 3){

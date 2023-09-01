@@ -21,4 +21,22 @@ public class Member {
     }
 
 
+
+    public static void viewAvailableBooks(){
+
+    }
+
+    public static void viewMyBooks(){
+
+    }
+    public static void issueBook(){
+
+    }
+    public static void returnBook(){
+
+    }
+    public static void payFine(){
+
+    }
+
 }
