@@ -1,4 +1,3 @@
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -84,7 +83,9 @@ public class Member {
         }
     }
     public void payFine(){
-
+        System.out.println("---------------------------------");
+        System.out.printf("You had a total fine of Rs. %d. It has been paid successfully!%n", this.totalFines);
+        this.totalFines = 0;
     }
 
     public int getID() {

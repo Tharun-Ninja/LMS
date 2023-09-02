@@ -27,6 +27,7 @@ public class Database{
 
 
     public void registerMember(String name, int age, int phone){
+        System.out.println("---------------------------------");
 
         if (this._isPhoneUsed(phone)){
             System.out.println("Phone number already registered");
@@ -42,7 +43,10 @@ public class Database{
     public void viewAllMembers(){
         System.out.println("List of all members:");
 
+        int totalFine = 0;
         for (Member member : Members.values()) {
+            System.out.println("---------------------------------");
+
             System.out.println("Member ID: " + member.getID());
             System.out.println("Name: " + member.getName());
             System.out.println("Age: " + member.getAge());
@@ -52,17 +56,27 @@ public class Database{
                 for(Book book: member.getBooks()){
                     System.out.println("Book ID: "+book.getID());
                     System.out.println("Name: "+book.getTitle());
+                    System.out.println("Fine per book: "+this._calculateFine(book.getID()));
+                    totalFine += this._calculateFine(book.getID());
                 }
-                System.out.println();
             }
             else{
                 System.out.println("Books holding: 0");
             }
-            System.out.println("Total Fines: "+ member.getTotalFines());
+            System.out.println();
+            System.out.println("Total Fines: "+ (member.getTotalFines() + totalFine));
+            System.out.println();
+
         }
     }
 
+    private int _calculateFine(int bookID){
+        int due = (int) ((System.currentTimeMillis()/1000L) - Issues.get(bookID)) - dueDay;
+        return Math.max(due, 0) * finePerDay;
+    }
+
     public void removeMember(String name, int memberID) {
+        System.out.println("---------------------------------");
         Member memberToRemove = Members.get(memberID);
         if (memberToRemove != null && memberToRemove.getName().equals(name)) {
             Members.remove(memberID);
@@ -85,6 +99,7 @@ public class Database{
     }
 
     public void viewAllBooks(){
+        System.out.println("---------------------------------");
         if(Books.isEmpty()){
             System.out.println("No books Added");
         }
@@ -105,6 +120,8 @@ public class Database{
         System.out.println("List of available Books:");
 
         for (Book book : availableBooks.values()) {
+            System.out.println("---------------------------------");
+
             System.out.println("Book ID: " + book.getID());
             System.out.println("Title: " + book.getTitle());
             System.out.println("Author: " + book.getAuthor());
@@ -113,6 +130,7 @@ public class Database{
     }
 
     public void removeBook(int bookID) {
+        System.out.println("---------------------------------");
         Book bookToRemove = availableBooks.get(bookID);
         if (bookToRemove != null) {
             Books.remove(bookID);
@@ -125,42 +143,49 @@ public class Database{
     }
 
     public void issueBook(Member user,int bookID, String name){
+        System.out.println("---------------------------------");
+
         Book bookToIssue = availableBooks.get(bookID);
+        // book is available
         if(bookToIssue != null){
-            if(user.getBooks().size() < 2){
-                if(user.getBooks().isEmpty()){
-                    if(user.getTotalFines() == 0){
-                        user.addBooks(bookToIssue);
-                        System.out.println("here in user hold no books");
-                        availableBooks.remove(bookID);
-                        Issues.put(bookID, (System.currentTimeMillis()/1000L));
-                        System.out.println("Book issued Successfully");
+            if(bookToIssue.getTitle().equalsIgnoreCase(name)) {
+
+                // user hasn't reached book borrow limit
+                if (user.getBooks().size() < 2) {
+                    // if user didn't borrow any books
+                    if (user.getBooks().isEmpty()) {
+                        if (user.getTotalFines() == 0) {
+                            user.addBooks(bookToIssue);
+                            availableBooks.remove(bookID);
+                            Issues.put(bookID, (System.currentTimeMillis() / 1000L));
+                            System.out.println("Book issued Successfully");
+                        } else {
+                            System.out.printf("Please pay pending fine: %d%n", user.getTotalFines());
+                        }
                     }
-                    else{
-                        System.out.printf("Fine pending: %d%n", user.getTotalFines());
+                    // if user already has borrowed a book
+                    else {
+                        int existingBookID = user.getBooks().get(0).getID();
+                        int due = this._isFine(user, existingBookID, (System.currentTimeMillis() / 1000L));
+                        int currentFine = (due * finePerDay) + user.getTotalFines();
+                        if (currentFine == 0) {
+                            user.addBooks(bookToIssue);
+                            availableBooks.remove(bookID);
+                            Issues.put(bookID, (System.currentTimeMillis() / 1000L));
+                            System.out.println("Book issued Successfully");
+                        } else {
+                            System.out.printf("Fine pending: %d%n", currentFine);
+                        }
                     }
+
+
                 }
-                else{
-                    int existingBookID = user.getBooks().get(0).getID();
-                    int due = this._isFine(user, existingBookID, (System.currentTimeMillis()/1000L));
-                    int currentFine = (due * finePerDay) + user.getTotalFines();
-                    if(currentFine == 0){
-                        user.addBooks(bookToIssue);
-                        System.out.println("here in user hold 1 books");
-
-                        availableBooks.remove(bookID);
-                        Issues.put(bookID, (System.currentTimeMillis()/1000L));
-                        System.out.println("Book issued Successfully");
-                    }
-                    else{
-                        System.out.printf("Fine pending: %d%n", currentFine);
-                    }
+                else {
+                    System.out.println("Book limit reached");
                 }
-
-
             }
             else{
-                System.out.println("Book limit reached");
+                System.out.println("Name not Valid");
             }
         }
         else{
@@ -170,6 +195,8 @@ public class Database{
     }
 
     public void returnBook(Member user, int bookID){
+        System.out.println("---------------------------------");
+
         Book bookToRet = Books.get(bookID);
         if(bookToRet != null){
             if(availableBooks.get(bookID) == null){
@@ -206,7 +233,7 @@ public class Database{
     private Member _isMember(String name, int phone) {
 
         for (Member member : Members.values()) {
-            if(member.getName().equals(name) && (member.getPhone() == phone)){
+            if(member.getName().equalsIgnoreCase(name) && (member.getPhone() == phone)){
                 System.out.printf("Welcome %s. Member ID: <%d>%n", name, member.getID());
                 return member;
             }
@@ -218,6 +245,8 @@ public class Database{
 
 
     public Member memberLogin() {
+        System.out.println("---------------------------------");
+
         Scanner input = new Scanner(System.in);
 
         String name = this.validateName("Name", input);
