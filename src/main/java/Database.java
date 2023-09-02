@@ -274,7 +274,7 @@ public class Database{
     protected int validateInt(String q, Scanner in) {
         System.out.print(q + ": ");
         while (!in.hasNextInt()) {
-            System.out.println("Invalid " + q);
+            System.out.println("Invalid int: " + q);
             System.out.print(q + ": ");
             in.next();
         }

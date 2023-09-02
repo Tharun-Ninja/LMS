@@ -1,3 +1,5 @@
+import javax.xml.crypto.Data;
+
 public class Main{
 
     public static void main(String[] args) {
@@ -6,85 +8,55 @@ public class Main{
         Database database = Database.getDatabase();
 
         System.out.println("\nLibrary Portal Initialized….");
-        int option;
 
         while(true){
-            option = menu.InitMenu();
+            switch (menu.InitMenu()) {
+                case 1 -> runLibrarianMenu(librarian, menu);
+                case 2 -> runMemberMenu(database, menu);
+                case 3 -> {
+                    menu.exit();
+                    System.exit(0);
+                }
+                default -> System.out.println("Invalid option. Please choose a valid option.");
+            }
 
-            // Checking if Librarian
-            if(option == 1){
-                loop: while(true){
-                    switch (menu.librarianMenu()){
-                        case 1:
-                            librarian.registerMember();
-                            break;
+        }
 
-                        case 2:
-                            librarian.removeMember();
-                            break;
+    }
 
-                        case 3:
-                            librarian.addBook();
-                            break;
-
-                        case 4:
-                            librarian.removeBook();
-                            break;
-
-                        case 5:
-                            librarian.viewAllMembers();
-                            break;
-
-                        case 6:
-                            librarian.viewAllBooks();
-                            break;
-
-                        case 7:
-                            break loop;
-                    }
+    public static void runLibrarianMenu(Librarian librarian, Menu menu){
+        while(true){
+            switch (menu.librarianMenu()) {
+                case 1 -> librarian.registerMember();
+                case 2 -> librarian.removeMember();
+                case 3 -> librarian.addBook();
+                case 4 -> librarian.removeBook();
+                case 5 -> librarian.viewAllMembers();
+                case 6 -> librarian.viewAllBooks();
+                case 7 -> {
+                    return;
                 }
             }
-            // Checking if Member
-            else if (option == 2){
-                Member currentUser = database.memberLogin();
-                if(currentUser == null){
-                    continue;
+        }
+    }
+
+
+    public static void runMemberMenu(Database database, Menu menu){
+        Member currentUser = database.memberLogin();
+        if(currentUser == null){
+            return;
+        }
+
+        while(true){
+            switch (menu.memberMenu()) {
+                case 1 -> currentUser.viewAvailableBooks();
+                case 2 -> currentUser.viewMyBooks();
+                case 3 -> currentUser.issueBook();
+                case 4 -> currentUser.returnBook();
+                case 5 -> currentUser.payFine();
+                case 6 -> {
+                    return;
                 }
-
-                // check member if valid
-                loop: while(true){
-                    switch (menu.memberMenu()){
-                        case 1:
-                            currentUser.viewAvailableBooks();
-                            break;
-
-                        case 2:
-                            currentUser.viewMyBooks();
-                            break;
-
-                        case 3:
-                            currentUser.issueBook();
-                            break;
-
-                        case 4:
-                            currentUser.returnBook();
-                            break;
-
-                        case 5:
-                            currentUser.payFine();
-                            break;
-
-                        case 6:
-                            break loop;
-                    }
-                }
-            }
-            // Exit
-            else if(option == 3){
-                menu.exit();
-            }
-            else {
-                System.out.println("Invalid");
             }
         }
 
