@@ -2,25 +2,24 @@ import java.util.Scanner;
 
 public class Librarian{
 
-    Database database = Database.getDatabase();
+    private final Database database;
+    public Librarian() {
+        this.database = Database.getDatabase();
+    }
+
+    private final Scanner input = new Scanner(System.in);
 
     public void registerMember(){
-        System.out.println("---------------------------------");
-        Scanner input = new Scanner(System.in);
 
         String name = database.validateName("Name", input);
         int age = database.validateInt("Age", input);
         int phone = database.validatePhone("Phone no", input);
 
-//        System.out.println("---------------------------------");
 
         database.registerMember(name, age, phone);
     }
 
     public void removeMember(){
-        System.out.println("---------------------------------");
-        Scanner input = new Scanner(System.in);
-
         String name = database.validateName("Name", input);
         int id = database.validateInt("Member ID", input);
 
@@ -28,8 +27,6 @@ public class Librarian{
     }
 
     public void addBook(){
-        System.out.println("---------------------------------");
-        Scanner input = new Scanner(System.in);
 
         String title = database.validateName("Book title", input);
         String author = database.validateName("Author", input);
@@ -41,8 +38,6 @@ public class Librarian{
     }
 
     public void removeBook() {
-        System.out.println("---------------------------------");
-        Scanner input = new Scanner(System.in);
         int bookID = database.validateInt("Book ID", input);
 
         database.removeBook(bookID);

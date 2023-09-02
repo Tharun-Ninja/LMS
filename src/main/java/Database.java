@@ -287,7 +287,7 @@ public class Database{
     protected int validatePhone(String q, Scanner in) {
         System.out.print(q + ": ");
         while (true) {
-            String phoneNumber = in.next();
+            String phoneNumber = in.nextLine();
 
             if (phoneNumber.length() == 10 && phoneNumber.matches("\\d+")) {
                 return Integer.parseInt(phoneNumber);
