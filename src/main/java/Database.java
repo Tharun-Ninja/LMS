@@ -1,7 +1,4 @@
-import javax.xml.crypto.Data;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Scanner;
 
 public class Database{
@@ -21,6 +18,8 @@ public class Database{
 
     HashMap<Integer, Member> Members = new HashMap<>();
     HashMap<Integer, Book> Books = new HashMap<>();
+    HashMap<Integer, Book> availableBooks = new HashMap<>();
+
 
     public void registerMember(String name, int age, int phone){
         int memberID = ++memberCount;
@@ -58,6 +57,8 @@ public class Database{
 
             int bookID = ++bookCount;
             Books.put(bookID, new Book(bookID, title, author));
+            availableBooks.put(bookID, new Book(bookID, title, author));
+
         }
     }
 
@@ -72,13 +73,60 @@ public class Database{
         }
     }
 
+    public void viewAvailableBooks(){
+        System.out.println("List of available Books:");
+
+        for (Book book : availableBooks.values()) {
+            System.out.println("Book ID: " + book.getID());
+            System.out.println("Title: " + book.getTitle());
+            System.out.println("Author: " + book.getAuthor());
+            System.out.println();
+        }
+    }
+
     public void removeBook(int bookID) {
-        Book boolToRemove = Books.get(bookID);
-        if (boolToRemove != null) {
+        Book bookToRemove = Books.get(bookID);
+        if (bookToRemove != null) {
             Books.remove(bookID);
+            availableBooks.remove(bookID);
+
             System.out.printf("Book with ID %d removed successfully.%n", bookID);
         } else {
             System.out.printf("Book with ID %d not found.%n", bookID);
+        }
+    }
+
+    public void issueBook(Member user,int bookID, String name){
+        Book bookToIssue = availableBooks.get(bookID);
+        if(bookToIssue != null){
+            if(user.addBooks(bookToIssue) == 0){
+                availableBooks.remove(bookID);
+                System.out.println("Book issued Successfully");
+            }
+            else{
+                System.out.println("Book limit reached");
+            }
+        }
+        else{
+            System.out.println("Book not Found");
+
+        }
+    }
+
+    public void returnBook(Member user, int bookID){
+        Book bookToRet = Books.get(bookID);
+        if(bookToRet != null){
+            if(availableBooks.get(bookID) == null){
+                availableBooks.put(bookID, bookToRet);
+                System.out.printf("Book ID: %d successfully returned. 12 Rupees has been charged for a delay of 4 days. %n", bookID);
+
+            }
+            else{
+                System.out.printf("Book ID: %d already returned.", bookID);
+            }
+        }
+        else{
+            System.out.printf("Book ID: %d, not found.", bookID);
         }
     }
 
@@ -128,8 +176,10 @@ public class Database{
             System.out.print(q + ": ");
             in.next();
         }
+        int option = in.nextInt();
+        in.nextLine();
 
-        return in.nextInt();
+        return option;
     }
 
     protected int validatePhone(String q, Scanner in) {
