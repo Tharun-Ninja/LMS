@@ -13,23 +13,23 @@ public class Database{
     }
 
 
-    int memberCount = 0;
-    int bookCount = 0;
+    private int memberCount = 0;
+    private int bookCount = 0;
 
-    int finePerDay = 3;
-    int dueDay = 10;
+    private final int finePerDay = 3;
+    private final int dueDay = 10;
 
-    HashMap<Integer, Member> Members = new HashMap<>();
-    HashMap<Integer, Book> Books = new HashMap<>();
-    HashMap<Integer, Book> availableBooks = new HashMap<>();
-    HashMap<Integer, Long> Issues = new HashMap<>();
+    private HashMap<Integer, Member> Members = new HashMap<>();
+    private HashMap<Integer, Book> Books = new HashMap<>();
+    private HashMap<Integer, Book> availableBooks = new HashMap<>();
+    private HashMap<Integer, Long> Issues = new HashMap<>();
 
 
 
     public void registerMember(String name, int age, int phone){
         System.out.println("---------------------------------");
 
-        if (this._isPhoneUsed(phone)){
+        if (this.isPhoneUsed(phone)){
             System.out.println("Phone number already registered");
         }
         else{
@@ -41,6 +41,11 @@ public class Database{
     }
 
     public void viewAllMembers(){
+        if(Members.isEmpty()){
+            System.out.println("---------------------------------");
+            System.out.println("No Members Yet!");
+            return;
+        }
         System.out.println("List of all members:");
 
         int totalFine = 0;
@@ -56,8 +61,8 @@ public class Database{
                 for(Book book: member.getBooks()){
                     System.out.println("Book ID: "+book.getID());
                     System.out.println("Name: "+book.getTitle());
-                    System.out.println("Fine per book: "+this._calculateFine(book.getID()));
-                    totalFine += this._calculateFine(book.getID());
+                    System.out.println("Fine per book: "+this.calculateFine(book.getID()));
+                    totalFine += this.calculateFine(book.getID());
                 }
             }
             else{
@@ -65,12 +70,11 @@ public class Database{
             }
             System.out.println();
             System.out.println("Total Fines: "+ (member.getTotalFines() + totalFine));
-            System.out.println();
 
         }
     }
 
-    private int _calculateFine(int bookID){
+    private int calculateFine(int bookID){
         int due = (int) ((System.currentTimeMillis()/1000L) - Issues.get(bookID)) - dueDay;
         return Math.max(due, 0) * finePerDay;
     }
@@ -78,7 +82,7 @@ public class Database{
     public void removeMember(String name, int memberID) {
         System.out.println("---------------------------------");
         Member memberToRemove = Members.get(memberID);
-        if (memberToRemove != null && memberToRemove.getName().equals(name)) {
+        if (memberToRemove != null && memberToRemove.getName().equalsIgnoreCase(name)) {
             Members.remove(memberID);
             System.out.printf("Member with ID %d and name %s removed successfully.%n", memberID, name);
         } else {
@@ -87,14 +91,11 @@ public class Database{
     }
 
 
-
     public void addBook(String title, String author, int copies){
         for(; copies > 0; copies--) {
-
             int bookID = ++bookCount;
             Books.put(bookID, new Book(bookID, title, author));
             availableBooks.put(bookID, new Book(bookID, title, author));
-
         }
     }
 
@@ -147,49 +148,31 @@ public class Database{
 
         Book bookToIssue = availableBooks.get(bookID);
         // book is available
-        if(bookToIssue != null){
-            if(bookToIssue.getTitle().equalsIgnoreCase(name)) {
+        if(bookToIssue != null && bookToIssue.getTitle().equalsIgnoreCase(name)){
+            // user hasn't reached book borrow limit
+            if (user.getBooksCount() < 2) {
 
-                // user hasn't reached book borrow limit
-                if (user.getBooks().size() < 2) {
-                    // if user didn't borrow any books
-                    if (user.getBooks().isEmpty()) {
-                        if (user.getTotalFines() == 0) {
-                            user.addBooks(bookToIssue);
-                            availableBooks.remove(bookID);
-                            Issues.put(bookID, (System.currentTimeMillis() / 1000L));
-                            System.out.println("Book issued Successfully");
-                        } else {
-                            System.out.printf("Please pay pending fine: %d%n", user.getTotalFines());
-                        }
-                    }
-                    // if user already has borrowed a book
-                    else {
-                        int existingBookID = user.getBooks().get(0).getID();
-                        int due = this._isFine(user, existingBookID, (System.currentTimeMillis() / 1000L));
-                        int currentFine = (due * finePerDay) + user.getTotalFines();
-                        if (currentFine == 0) {
-                            user.addBooks(bookToIssue);
-                            availableBooks.remove(bookID);
-                            Issues.put(bookID, (System.currentTimeMillis() / 1000L));
-                            System.out.println("Book issued Successfully");
-                        } else {
-                            System.out.printf("Fine pending: %d%n", currentFine);
-                        }
-                    }
-
-
+                int fine = user.getTotalFines();
+                for(Book book: user.getBooks()){
+                    fine += calculateFine(book.getID());
                 }
-                else {
-                    System.out.println("Book limit reached");
+                if(fine == 0){
+                    user.addBooks(bookToIssue);
+                    availableBooks.remove(bookID);
+                    Issues.put(bookID, (System.currentTimeMillis() / 1000L));
+                    System.out.println("Book issued Successfully");
                 }
+                else{
+                    System.out.printf("Please pay pending fine: %d%n", fine);
+                }
+
             }
-            else{
-                System.out.println("Name not Valid");
+            else {
+                System.out.println("Book limit reached");
             }
         }
         else{
-            System.out.println("Book not Found");
+            System.out.println("Name not Valid");
 
         }
     }
@@ -201,7 +184,7 @@ public class Database{
         if(bookToRet != null){
             if(availableBooks.get(bookID) == null){
                 availableBooks.put(bookID, bookToRet);
-                int due = this._isFine(user, bookID, (System.currentTimeMillis()/1000L));
+                int due = this._isFine(bookID, (System.currentTimeMillis()/1000L));
 
                 if(due > 0){
                     int fine = due*finePerDay;
@@ -223,7 +206,7 @@ public class Database{
         }
     }
 
-    private int _isFine(Member user, int bookID, Long returnDate) {
+    private int _isFine(int bookID, Long returnDate) {
         int days = (int) (returnDate - Issues.get(bookID)) - dueDay;
         return Math.max(days, 0);
     }
@@ -250,7 +233,7 @@ public class Database{
         Scanner input = new Scanner(System.in);
 
         String name = this.validateName("Name", input);
-        int phone = this.validatePhone("Phone no", input);
+        int phone = this.validatePhone(input);
 
         return this._isMember(name, phone);
     }
@@ -274,7 +257,7 @@ public class Database{
     protected int validateInt(String q, Scanner in) {
         System.out.print(q + ": ");
         while (!in.hasNextInt()) {
-            System.out.println("Invalid int: " + q);
+            System.out.println("Invalid " + q);
             System.out.print(q + ": ");
             in.next();
         }
@@ -284,21 +267,21 @@ public class Database{
         return option;
     }
 
-    protected int validatePhone(String q, Scanner in) {
-        System.out.print(q + ": ");
+    protected int validatePhone(Scanner in) {
+        System.out.print("Phone: ");
         while (true) {
             String phoneNumber = in.nextLine();
 
             if (phoneNumber.length() == 10 && phoneNumber.matches("\\d+")) {
                 return Integer.parseInt(phoneNumber);
             } else {
-                System.out.println("Invalid " + q + ". Please enter a 10-digit phone number.");
-                System.out.print(q + ": ");
+                System.out.println("Invalid Phone. Please enter a 10-digit phone number.");
+                System.out.print("Phone: ");
             }
         }
     }
 
-    private boolean _isPhoneUsed(int phone){
+    private boolean isPhoneUsed(int phone){
         for(Member member: Members.values()){
             if(member.getPhone() == phone){
                 return true;

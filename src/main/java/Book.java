@@ -1,16 +1,14 @@
 public class Book {
 
-    private int ID;
-    private String Title;
-    private String Author;
+    private final int ID;
+    private final String Title;
+    private final String Author;
 
     public Book(int id, String title, String author){
         this.ID = id;
         this.Title = title;
         this.Author = author;
     }
-
-
 
     public int getID() {
         return ID;
