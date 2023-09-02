@@ -1,5 +1,3 @@
-import javax.xml.crypto.Data;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 public class Menu {
 
@@ -36,6 +34,7 @@ public class Menu {
     }
 
     public int librarianMenu(){
+        System.out.println("current time: "+ (System.currentTimeMillis()/ 1000L));
         System.out.print(
                 "---------------------------------\n" +
                         "1. Register a member\n" +

@@ -11,17 +11,23 @@ public class Member {
     private String Name;
     private int Phone;
 
-    private int totalFines;
+    private int totalFines = 0;
 
     private ArrayList<Book> Books = new ArrayList<>();
 
-    public int addBooks(Book book) {
-        if(this.Books.size() >= 2){
-            return 1;
-        }
-        this.Books.add(book);
-        return 0;
+    public ArrayList<Book> getBooks(){
+        return Books;
     }
+
+    public void addBooks(Book book) {
+        if(this.Books.size() < 2){
+            this.Books.add(book);
+        }
+        else{
+            System.out.println("Book limit reached");
+        }
+    }
+
 
     public Member(int id, String name, int age, int phone) {
         this.Name = name;
@@ -96,5 +102,13 @@ public class Member {
 
     public int getPhone() {
         return Phone;
+    }
+
+    public int getTotalFines() {
+        return totalFines;
+    }
+
+    public void setTotalFines(int totalFines) {
+        this.totalFines += totalFines;
     }
 }

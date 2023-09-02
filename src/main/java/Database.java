@@ -16,15 +16,26 @@ public class Database{
     int memberCount = 0;
     int bookCount = 0;
 
+    int finePerDay = 3;
+    int dueDay = 10;
+
     HashMap<Integer, Member> Members = new HashMap<>();
     HashMap<Integer, Book> Books = new HashMap<>();
     HashMap<Integer, Book> availableBooks = new HashMap<>();
+    HashMap<Integer, Long> Issues = new HashMap<>();
+
 
 
     public void registerMember(String name, int age, int phone){
-        int memberID = ++memberCount;
-        Members.put(memberID, new Member(memberID, name, age, phone));
-        System.out.printf("Member Successfully Registered with Member ID: %d!%n", memberID);
+
+        if (this._isPhoneUsed(phone)){
+            System.out.println("Phone number already registered");
+        }
+        else{
+            int memberID = ++memberCount;
+            Members.put(memberID, new Member(memberID, name, age, phone));
+            System.out.printf("Member Successfully Registered with Member ID: %d!%n", memberID);
+        }
 
     }
 
@@ -36,7 +47,18 @@ public class Database{
             System.out.println("Name: " + member.getName());
             System.out.println("Age: " + member.getAge());
             System.out.println("Phone: " + member.getPhone());
-            System.out.println();
+            if(!member.getBooks().isEmpty()){
+                System.out.println();
+                for(Book book: member.getBooks()){
+                    System.out.println("Book ID: "+book.getID());
+                    System.out.println("Name: "+book.getTitle());
+                }
+                System.out.println();
+            }
+            else{
+                System.out.println("Books holding: 0");
+            }
+            System.out.println("Total Fines: "+ member.getTotalFines());
         }
     }
 
@@ -63,14 +85,20 @@ public class Database{
     }
 
     public void viewAllBooks(){
-        System.out.println("List of all Books:");
-
-        for (Book book : Books.values()) {
-            System.out.println("Book ID: " + book.getID());
-            System.out.println("Title: " + book.getTitle());
-            System.out.println("Author: " + book.getAuthor());
-            System.out.println();
+        if(Books.isEmpty()){
+            System.out.println("No books Added");
         }
+        else{
+            System.out.println("List of all Books:");
+
+            for (Book book : Books.values()) {
+                System.out.println("Book ID: " + book.getID());
+                System.out.println("Title: " + book.getTitle());
+                System.out.println("Author: " + book.getAuthor());
+                System.out.println();
+            }
+        }
+
     }
 
     public void viewAvailableBooks(){
@@ -85,7 +113,7 @@ public class Database{
     }
 
     public void removeBook(int bookID) {
-        Book bookToRemove = Books.get(bookID);
+        Book bookToRemove = availableBooks.get(bookID);
         if (bookToRemove != null) {
             Books.remove(bookID);
             availableBooks.remove(bookID);
@@ -99,9 +127,37 @@ public class Database{
     public void issueBook(Member user,int bookID, String name){
         Book bookToIssue = availableBooks.get(bookID);
         if(bookToIssue != null){
-            if(user.addBooks(bookToIssue) == 0){
-                availableBooks.remove(bookID);
-                System.out.println("Book issued Successfully");
+            if(user.getBooks().size() < 2){
+                if(user.getBooks().isEmpty()){
+                    if(user.getTotalFines() == 0){
+                        user.addBooks(bookToIssue);
+                        System.out.println("here in user hold no books");
+                        availableBooks.remove(bookID);
+                        Issues.put(bookID, (System.currentTimeMillis()/1000L));
+                        System.out.println("Book issued Successfully");
+                    }
+                    else{
+                        System.out.printf("Fine pending: %d%n", user.getTotalFines());
+                    }
+                }
+                else{
+                    int existingBookID = user.getBooks().get(0).getID();
+                    int due = this._isFine(user, existingBookID, (System.currentTimeMillis()/1000L));
+                    int currentFine = (due * finePerDay) + user.getTotalFines();
+                    if(currentFine == 0){
+                        user.addBooks(bookToIssue);
+                        System.out.println("here in user hold 1 books");
+
+                        availableBooks.remove(bookID);
+                        Issues.put(bookID, (System.currentTimeMillis()/1000L));
+                        System.out.println("Book issued Successfully");
+                    }
+                    else{
+                        System.out.printf("Fine pending: %d%n", currentFine);
+                    }
+                }
+
+
             }
             else{
                 System.out.println("Book limit reached");
@@ -118,7 +174,17 @@ public class Database{
         if(bookToRet != null){
             if(availableBooks.get(bookID) == null){
                 availableBooks.put(bookID, bookToRet);
-                System.out.printf("Book ID: %d successfully returned. 12 Rupees has been charged for a delay of 4 days. %n", bookID);
+                int due = this._isFine(user, bookID, (System.currentTimeMillis()/1000L));
+
+                if(due > 0){
+                    int fine = due*finePerDay;
+                    user.setTotalFines(fine);
+
+                    System.out.printf("Book ID: %d successfully returned. %d Rupees has been charged for a delay of %d days. %n", bookID, fine, due);
+                }
+                else{
+                    System.out.printf("Book ID: %d successfully returned.%n", bookID);
+                }
 
             }
             else{
@@ -129,6 +195,13 @@ public class Database{
             System.out.printf("Book ID: %d, not found.", bookID);
         }
     }
+
+    private int _isFine(Member user, int bookID, Long returnDate) {
+        int days = (int) (returnDate - Issues.get(bookID)) - dueDay;
+        return Math.max(days, 0);
+    }
+
+
 
     private Member _isMember(String name, int phone) {
 
@@ -158,11 +231,11 @@ public class Database{
 
     protected String validateName(String q, Scanner in){
         System.out.print(q + ": ");
-        String name = in.nextLine();
+        String name = in.nextLine().trim();
         while(!name.matches("[a-zA-Z ]+")) {
             System.out.println("Invalid "+q);
             System.out.print(q + ": ");
-            name = in.nextLine();
+            name = in.nextLine().trim();
         }
 
         return name;
@@ -194,6 +267,15 @@ public class Database{
                 System.out.print(q + ": ");
             }
         }
+    }
+
+    private boolean _isPhoneUsed(int phone){
+        for(Member member: Members.values()){
+            if(member.getPhone() == phone){
+                return true;
+            }
+        }
+        return false;
     }
 
 
