@@ -1,20 +1,23 @@
+import javax.xml.crypto.Data;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 public class Menu {
 
+    Database database = new Database();
     private int option;
 
-    private int validateOption(Scanner in){
-        try {
-            option = in.nextInt();
-        }
-        catch (InputMismatchException e){
-            System.out.println("Invalid Input");
-            System.exit(1);
-        }
+//    private int validateOption(Scanner in){
+//        try {
+//            option = in.nextInt();
+//        }
+//        catch (InputMismatchException e){
+//            System.out.println("Invalid Input");
+//            System.exit(1);
+//        }
+//
+//        return option;
+//    }
 
-        return option;
-    }
 
     public int InitMenu(){
         System.out.print(
@@ -26,7 +29,7 @@ public class Menu {
         );
 
         Scanner in = new Scanner(System.in);
-        option = validateOption(in);
+        option = database.validateInt("",in);
 
         return option;
 
@@ -46,7 +49,7 @@ public class Menu {
         );
 
         Scanner in = new Scanner(System.in);
-        option = validateOption(in);
+        option = database.validateInt("",in);
 
         return option;
     }
@@ -64,7 +67,7 @@ public class Menu {
         );
 
         Scanner in = new Scanner(System.in);
-        option = validateOption(in);
+        option = database.validateInt("",in);
 
         return option;
     }

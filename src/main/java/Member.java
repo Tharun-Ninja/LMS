@@ -1,3 +1,6 @@
+import javax.xml.crypto.Data;
+import java.util.Scanner;
+
 public class Member {
 
     private int ID;
@@ -14,21 +17,23 @@ public class Member {
         this.ID = id;
     }
 
+    Database database = new Database();
 
-    public static void viewAvailableBooks(){
 
-    }
-
-    public static void viewMyBooks(){
+    public void viewAvailableBooks(){
 
     }
-    public static void issueBook(){
+
+    public void viewMyBooks(){
 
     }
-    public static void returnBook(){
+    public void issueBook(){
 
     }
-    public static void payFine(){
+    public void returnBook(){
+
+    }
+    public void payFine(){
 
     }
 

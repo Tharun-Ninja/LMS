@@ -6,6 +6,7 @@ public class Main{
     public static void main(String[] args) {
         Menu menu = new Menu();
         Librarian librarian = new Librarian();
+        Database database = Database.getDatabase();
 
         System.out.println("\nLibrary Portal Initialized….");
         int option;
@@ -48,30 +49,32 @@ public class Main{
             }
             // Checking if Member
             else if (option == 2){
-                System.out.print("Name: ");
-                System.out.print("Phone no: ");
+                Member currentUser = database.memberLogin();
+                if(currentUser == null){
+                    continue;
+                }
 
                 // check member if valid
                 loop: while(true){
                     switch (menu.memberMenu()){
                         case 1:
-                            Member.viewAvailableBooks();
+                            currentUser.viewAvailableBooks();
                             break;
 
                         case 2:
-                            Member.viewMyBooks();
+                            currentUser.viewMyBooks();
                             break;
 
                         case 3:
-                            Member.issueBook();
+                            currentUser.issueBook();
                             break;
 
                         case 4:
-                            Member.returnBook();
+                            currentUser.returnBook();
                             break;
 
                         case 5:
-                            Member.payFine();
+                            currentUser.payFine();
                             break;
 
                         case 6:
@@ -84,8 +87,7 @@ public class Main{
                 menu.exit();
             }
             else {
-                System.out.println("Invalid Input");
-                System.exit(1);
+                System.out.println("Invalid");
             }
         }
 
