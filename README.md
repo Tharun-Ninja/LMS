@@ -61,6 +61,8 @@ This Library Management System (LMS) is written in Java and provides various fun
    - Allows a librarian to remove a member from the library.
    - Takes input for the member name and ID to verify.
    - If not matching then throw error.
+   - A member will be removed from the database even if he has a book not returned and fines to be paid.
+       Since Librarian is in charge of this. And the book will be removed from the database and issue list.
 
 3. **Add Book:**
     - Enables a librarian to add a new book to the library.
@@ -71,8 +73,8 @@ This Library Management System (LMS) is written in Java and provides various fun
     - Allows a librarian to remove a book from the library.
     - Requires to be input for the book ID.
     - Even if multiple copies are there only the copy with book id will be removed.
-    - A member will be removed from the database even if he has a book not returned and fines to be paid.
-   Since Librarian is in charge of this. And the book will be removed from the database and issue list.
+    - If Librarian is trying to remove a book that is borrowed by a member and not yet returned 
+   then it will throw error that book is not found in library.
    
 5. **List Members:**
     - Displays a list of all registered members of the library along with their borrowed books and fines.

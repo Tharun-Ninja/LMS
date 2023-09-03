@@ -58,15 +58,6 @@ public class Member {
         return Books;
     }
 
-    public void addBooks(Book book) {
-        if(this.Books.size() < 2){
-            this.Books.add(book);
-        }
-        else{
-            System.out.println("Book limit reached");
-        }
-    }
-
     public void viewAvailableBooks(){
         database.viewAvailableBooks();
     }

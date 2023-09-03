@@ -162,7 +162,7 @@ public class Database{
                     fine += calculateFine(book.getID());
                 }
                 if(fine == 0){
-                    user.addBooks(bookToIssue);
+                    user.getBooks().add(bookToIssue);
                     availableBooks.remove(bookID);
                     Issues.put(bookID, (System.currentTimeMillis() / 1000L));
                     System.out.println("Book issued Successfully");
@@ -192,7 +192,7 @@ public class Database{
 
                 if(fine > 0){
                     user.setTotalFines(fine);
-                    System.out.printf("Book ID: %d successfully returned.%n%d Rupees has been charged for a delay of %d days. %n", bookID, fine, (int)((System.currentTimeMillis()/1000L) - Issues.get(bookID)) - dueDay);
+                    System.out.printf("Book ID: %d successfully returned.%n%d Rupees has been charged for a delay of %d days.%n", bookID, fine, (int)((System.currentTimeMillis()/1000L) - Issues.get(bookID)) - dueDay);
                 }
                 else{
                     System.out.printf("Book ID: %d successfully returned.%n", bookID);
@@ -202,11 +202,11 @@ public class Database{
 
             }
             else{
-                System.out.printf("Book ID: %d already returned.", bookID);
+                System.out.printf("Book ID: %d already returned.%n", bookID);
             }
         }
         else{
-            System.out.printf("Book ID: %d, not found.", bookID);
+            System.out.printf("Book ID: %d, not found.%n", bookID);
         }
     }
 
@@ -241,50 +241,71 @@ public class Database{
 
 
     protected String validateName(String q, Scanner in){
-        System.out.print(q + ": ");
-        String name = in.nextLine().trim();
-        while(!name.matches("[a-zA-Z ]+")) {
-            System.out.println("Invalid "+q);
-            System.out.print(q + ": ");
-            name = in.nextLine().trim();
-        }
+        try {
 
-        return name;
+            System.out.print(q + ": ");
+            String name = in.nextLine().trim();
+            while (!name.matches("[a-zA-Z ]+")) {
+                System.out.println("Invalid " + q);
+                System.out.print(q + ": ");
+                name = in.nextLine().trim();
+            }
+
+            return name;
+        }
+        catch (Exception e){
+            System.out.println("Invalid String");
+            return "";
+        }
     }
 
 
     protected int validateInt(String q, Scanner in) {
-        System.out.print(q + ": ");
-        while (true) {
-            while (!in.hasNextInt()) {
-                System.out.println("Invalid " + q);
-                System.out.print(q + ": ");
-                in.next();
-            }
-            int option = in.nextInt();
-            in.nextLine();
+        try{
+            System.out.print(q + ": ");
+            while (true) {
+                while (!in.hasNextInt()) {
+                    System.out.println("Invalid " + q);
+                    System.out.print(q + ": ");
+                    in.next();
+                    in.nextLine();
+                }
+                int option = in.nextInt();
+                in.nextLine();
 
-            if (option > 0) {
-                return option;
-            } else {
-                System.out.println("Please enter a positive " + q);
-                System.out.print(q + ": ");
+                if (option > 0) {
+                    return option;
+                } else {
+                    System.out.println("Please enter a positive " + q);
+                    System.out.print(q + ": ");
+                }
             }
         }
+        catch (Exception e){
+            System.out.println("Invalid int");
+            return -1;
+        }
+
     }
 
 
     protected long validatePhone(Scanner in) {
-        System.out.print("Phone: ");
-        while (true) {
-            String phoneNumber = in.nextLine();
+        try{
+            System.out.print("Phone: ");
+            while (true) {
+                String phoneNumber = in.nextLine();
 
-            if (phoneNumber.length() == 10 && phoneNumber.matches("\\d+")) {
-                return Long.parseLong(phoneNumber);
-            } else {
-                System.out.println("Invalid Phone. Please enter a 10-digit phone number.");
-                System.out.print("Phone: ");
+                if (phoneNumber.length() == 10 && phoneNumber.matches("\\d+")) {
+                    return Long.parseLong(phoneNumber);
+                } else {
+                    System.out.println("Invalid Phone. Please enter a 10-digit phone number.");
+                    System.out.print("Phone: ");
+                }
             }
+        }
+        catch (Exception e){
+            System.out.println("Invalid phone");
+            return -1;
         }
     }
 
