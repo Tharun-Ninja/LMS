@@ -71,6 +71,8 @@ This Library Management System (LMS) is written in Java and provides various fun
     - Allows a librarian to remove a book from the library.
     - Requires to be input for the book ID.
     - Even if multiple copies are there only the copy with book id will be removed.
+    - A member will be removed from the database even if he has a book not returned and fines to be paid.
+   Since Librarian is in charge of this. And the book will be removed from the database and issue list.
    
 5. **List Members:**
     - Displays a list of all registered members of the library along with their borrowed books and fines.
@@ -94,7 +96,7 @@ This Library Management System (LMS) is written in Java and provides various fun
     - Allows a member to borrow a book from the library, provided their fine amount is zero and doesn't hold a book which is more than 10 days without returning.
     - In that case the fine will be calculated instantaneously and printed for reference. But the fine amount can only be paid after returning the book.
     - If the member owes the library penalty money, they must clear the fines before issuing a new book.
-    - Takes input for the book ID, and checks if the book is issued if it is available and valid and then if any fine
+    - Takes input for the book ID and name, and checks if the book is issued if it is available and valid and then if any fine
    is there for member, it may be previous fine or instantaneous fine.
 
 4. **Return Book:**

@@ -48,8 +48,8 @@ public class Database{
         }
         System.out.println("List of all members:");
 
-        int totalFine = 0;
         for (Member member : Members.values()) {
+            int totalFine = 0;
             System.out.println("---------------------------------");
 
             System.out.println("Member ID: " + member.getID());
@@ -83,6 +83,13 @@ public class Database{
         System.out.println("---------------------------------");
         Member memberToRemove = Members.get(memberID);
         if (memberToRemove != null && memberToRemove.getName().equalsIgnoreCase(name)) {
+            if(memberToRemove.getBooksCount() != 0){
+                for(Book book: memberToRemove.getBooks()){
+                    System.out.printf("Removing book ID: %d, titled: %s issued by the member%n", book.getID(), book.getTitle());
+                    Issues.remove(book.getID());
+                    Books.remove(book.getID());
+                }
+            }
             Members.remove(memberID);
             System.out.printf("Member with ID %d and name %s removed successfully.%n", memberID, name);
         } else {
