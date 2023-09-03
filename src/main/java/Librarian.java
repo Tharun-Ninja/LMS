@@ -13,7 +13,7 @@ public class Librarian{
 
         String name = database.validateName("Name", input);
         int age = database.validateInt("Age", input);
-        int phone = database.validatePhone(input);
+        long phone = database.validatePhone(input);
 
 
         database.registerMember(name, age, phone);

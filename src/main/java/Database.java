@@ -26,7 +26,7 @@ public class Database{
 
 
 
-    public void registerMember(String name, int age, int phone){
+    public void registerMember(String name, int age, long phone){
         System.out.println("---------------------------------");
 
         if (this.isPhoneUsed(phone)){
@@ -205,7 +205,7 @@ public class Database{
 
 
 
-    private Member _isMember(String name, int phone) {
+    private Member _isMember(String name, long phone) {
 
         for (Member member : Members.values()) {
             if(member.getName().equalsIgnoreCase(name) && (member.getPhone() == phone)){
@@ -225,7 +225,7 @@ public class Database{
         Scanner input = new Scanner(System.in);
 
         String name = this.validateName("Name", input);
-        int phone = this.validatePhone(input);
+        long phone = this.validatePhone(input);
 
         return this._isMember(name, phone);
     }
@@ -267,13 +267,13 @@ public class Database{
     }
 
 
-    protected int validatePhone(Scanner in) {
+    protected long validatePhone(Scanner in) {
         System.out.print("Phone: ");
         while (true) {
             String phoneNumber = in.nextLine();
 
             if (phoneNumber.length() == 10 && phoneNumber.matches("\\d+")) {
-                return Integer.parseInt(phoneNumber);
+                return Long.parseLong(phoneNumber);
             } else {
                 System.out.println("Invalid Phone. Please enter a 10-digit phone number.");
                 System.out.print("Phone: ");
@@ -281,7 +281,7 @@ public class Database{
         }
     }
 
-    private boolean isPhoneUsed(int phone){
+    private boolean isPhoneUsed(long phone){
         for(Member member: Members.values()){
             if(member.getPhone() == phone){
                 return true;

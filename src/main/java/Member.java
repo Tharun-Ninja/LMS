@@ -8,12 +8,12 @@ public class Member {
     private final int Age;
 
     private final String Name;
-    private final int Phone;
+    private final long Phone;
 
     private int totalFines = 0;
     private final Database database;
 
-    public Member(int id, String name, int age, int phone) {
+    public Member(int id, String name, int age, long phone) {
         this.Name = name;
         this.Age = age;
         this.Phone = phone;
@@ -36,7 +36,7 @@ public class Member {
     }
 
 
-    public int getPhone() {
+    public long getPhone() {
         return Phone;
     }
 

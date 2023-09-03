@@ -53,7 +53,7 @@ This Library Management System (LMS) is written in Java and provides various fun
 1. **Register Member:**
    - Lets a librarian add a new member to the library.
    - Takes input for member details (name, age, phone number).
-   - Assumes that the phone number is a 10-digit number and to be unique for every member.
+   - Assuming that the phone number is a 10-digit number and to be unique for every member.
    - So every member should have unique phone number.
    - Unique member ID is generated.
 
@@ -94,7 +94,8 @@ This Library Management System (LMS) is written in Java and provides various fun
     - Allows a member to borrow a book from the library, provided their fine amount is zero and doesn't hold a book which is more than 10 days without returning.
     - In that case the fine will be calculated instantaneously and printed for reference. But the fine amount can only be paid after returning the book.
     - If the member owes the library penalty money, they must clear the fines before issuing a new book.
-    - Takes input for the book ID, and the book is issued if it is available and valid.
+    - Takes input for the book ID, and checks if the book is issued if it is available and valid and then if any fine
+   is there for member, it may be previous fine or instantaneous fine.
 
 4. **Return Book:**
     - Enables a member to return a borrowed book.
