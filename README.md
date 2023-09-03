@@ -92,19 +92,21 @@ This Library Management System (LMS) is written in Java and provides various fun
 
 3. **Issue Book:**
     - Allows a member to borrow a book from the library, provided their fine amount is zero and doesn't hold a book which is more than 10 days without returning.
+    - In that case the fine will be calculated instantaneously and printed for reference. But the fine amount can only be paid after returning the book.
     - If the member owes the library penalty money, they must clear the fines before issuing a new book.
-    - Requires to be input for the book ID, and the book is issued if it is available and valid.
+    - Takes input for the book ID, and the book is issued if it is available and valid.
 
 4. **Return Book:**
     - Enables a member to return a borrowed book.
-    - Requires to be input for the book ID to check if the member borrowed the book.
+    - Takes input for the book ID to check if the member borrowed the book. 
+    - Adjusts fine accordingly.
 
 
 5. **Pay Fine:**
 - *Calculate Fine:*
-   - Calculates and displays the fine amount for a book if it's returned after the due date (10 days).
+   - Calculates the fine amount for a book if it's returned after the due date (10 days).
    - In this calculation, 1 day is considered equal to 1 second.
-- Clears all fines owed by the member which is calculated after return a book.
+- Clears all fines owed by the member which is calculated after member returns a book.
 
 6. **Exit:**
     - Terminates the application.
