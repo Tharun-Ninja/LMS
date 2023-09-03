@@ -125,14 +125,21 @@ public class Database{
     }
 
     public void viewAvailableBooks(){
-        System.out.println("List of available Books:");
-
-        for (Book book : availableBooks.values()) {
-            System.out.println();
-            System.out.println("Book ID: " + book.getID());
-            System.out.println("Title: " + book.getTitle());
-            System.out.println("Author: " + book.getAuthor());
+        System.out.println("---------------------------------");
+        if(availableBooks.isEmpty()){
+            System.out.println("No books Available");
         }
+        else{
+            System.out.println("List of available Books:");
+
+            for (Book book : availableBooks.values()) {
+                System.out.println();
+                System.out.println("Book ID: " + book.getID());
+                System.out.println("Title: " + book.getTitle());
+                System.out.println("Author: " + book.getAuthor());
+            }
+        }
+
     }
 
     public void removeBook(int bookID) {
