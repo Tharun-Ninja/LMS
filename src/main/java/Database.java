@@ -254,7 +254,7 @@ public class Database{
             return name;
         }
         catch (Exception e){
-            System.out.println("Invalid String");
+            System.out.println("Invalid String ;)");
             return "";
         }
     }
@@ -282,7 +282,7 @@ public class Database{
             }
         }
         catch (Exception e){
-            System.out.println("Invalid int");
+            System.out.println("Invalid int ;)");
             return -1;
         }
 
@@ -304,7 +304,7 @@ public class Database{
             }
         }
         catch (Exception e){
-            System.out.println("Invalid phone");
+            System.out.println("Invalid phone ;)");
             return -1;
         }
     }
