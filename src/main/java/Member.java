@@ -1,4 +1,3 @@
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -78,10 +77,11 @@ public class Member {
         }
         else {
             for (Book book : Books) {
+                System.out.println();
+                System.out.println("Book ID: " + book.getID());
                 System.out.println("Book Name: " + book.getTitle());
                 System.out.println("Author: " + book.getAuthor());
             }
-            System.out.println();
         }
     }
     public void issueBook(){
@@ -109,9 +109,15 @@ public class Member {
         }
     }
     public void payFine(){
-        System.out.println("---------------------------------");
-        System.out.printf("You had a total fine of Rs. %d. It has been paid successfully!%n", this.totalFines);
-        this.totalFines = 0;
+        if(this.totalFines != 0){
+            System.out.println("---------------------------------");
+            System.out.printf("You had a total fine of Rs. %d. It has been paid successfully!%n", this.totalFines);
+            this.totalFines = 0;
+        }
+        else{
+            System.out.println("You Don't have any fine to be paid. Return a book to calculate fine.");
+        }
+
     }
 
 

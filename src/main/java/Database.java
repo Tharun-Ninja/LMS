@@ -57,8 +57,8 @@ public class Database{
             System.out.println("Age: " + member.getAge());
             System.out.println("Phone: " + member.getPhone());
             if(!member.getBooks().isEmpty()){
-                System.out.println();
                 for(Book book: member.getBooks()){
+                    System.out.println();
                     System.out.println("Book ID: "+book.getID());
                     System.out.println("Name: "+book.getTitle());
                     System.out.println("Fine per book: "+this.calculateFine(book.getID()));
@@ -108,10 +108,10 @@ public class Database{
             System.out.println("List of all Books:");
 
             for (Book book : Books.values()) {
+                System.out.println();
                 System.out.println("Book ID: " + book.getID());
                 System.out.println("Title: " + book.getTitle());
                 System.out.println("Author: " + book.getAuthor());
-                System.out.println();
             }
         }
 
@@ -121,12 +121,10 @@ public class Database{
         System.out.println("List of available Books:");
 
         for (Book book : availableBooks.values()) {
-            System.out.println("---------------------------------");
-
+            System.out.println();
             System.out.println("Book ID: " + book.getID());
             System.out.println("Title: " + book.getTitle());
             System.out.println("Author: " + book.getAuthor());
-            System.out.println();
         }
     }
 
@@ -172,7 +170,7 @@ public class Database{
             }
         }
         else{
-            System.out.println("Name not Valid");
+            System.out.println("Book not Found");
 
         }
     }
@@ -183,18 +181,17 @@ public class Database{
         Book bookToRet = Books.get(bookID);
         if(bookToRet != null){
             if(availableBooks.get(bookID) == null){
-                availableBooks.put(bookID, bookToRet);
-                int due = this._isFine(bookID, (System.currentTimeMillis()/1000L));
+                int fine = this.calculateFine(bookID);
 
-                if(due > 0){
-                    int fine = due*finePerDay;
+                if(fine > 0){
                     user.setTotalFines(fine);
-
-                    System.out.printf("Book ID: %d successfully returned. %d Rupees has been charged for a delay of %d days. %n", bookID, fine, due);
+                    System.out.printf("Book ID: %d successfully returned.%n%d Rupees has been charged for a delay of %d days. %n", bookID, fine, (int)((System.currentTimeMillis()/1000L) - Issues.get(bookID)) - dueDay);
                 }
                 else{
                     System.out.printf("Book ID: %d successfully returned.%n", bookID);
                 }
+                availableBooks.put(bookID, bookToRet);
+                Issues.remove(bookID);
 
             }
             else{
@@ -204,11 +201,6 @@ public class Database{
         else{
             System.out.printf("Book ID: %d, not found.", bookID);
         }
-    }
-
-    private int _isFine(int bookID, Long returnDate) {
-        int days = (int) (returnDate - Issues.get(bookID)) - dueDay;
-        return Math.max(days, 0);
     }
 
 
@@ -256,16 +248,24 @@ public class Database{
 
     protected int validateInt(String q, Scanner in) {
         System.out.print(q + ": ");
-        while (!in.hasNextInt()) {
-            System.out.println("Invalid " + q);
-            System.out.print(q + ": ");
-            in.next();
-        }
-        int option = in.nextInt();
-        in.nextLine();
+        while (true) {
+            while (!in.hasNextInt()) {
+                System.out.println("Invalid " + q);
+                System.out.print(q + ": ");
+                in.next();
+            }
+            int option = in.nextInt();
+            in.nextLine();
 
-        return option;
+            if (option > 0) {
+                return option;
+            } else {
+                System.out.println("Please enter a positive " + q);
+                System.out.print(q + ": ");
+            }
+        }
     }
+
 
     protected int validatePhone(Scanner in) {
         System.out.print("Phone: ");
